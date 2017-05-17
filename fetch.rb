@@ -1,13 +1,8 @@
 #!/usr/bin/env ruby
 
-begin
-  # bundler dance
-  cwd = Dir.getwd
-  Dir.chdir(File.join(Dir.getwd, File.dirname(__FILE__)))
-
+Dir.chdir(File.dirname(__FILE__)) do
+  puts Dir.getwd
   require "bundler/setup"
-
-  Dir.chdir(cwd)
 end
 
 require 'json'
@@ -56,8 +51,9 @@ for repo in repos do
   #puts name
   if Dir.exist?(name)
     puts "Updating #{name}"
-    Dir.chdir(name)
-    `git fetch -fp`
+    Dir.chdir(name) do
+      `git fetch -fp`
+    end
   else
     puts "Cloning #{name}"
     `git clone #{repo["ssh_url"]}`
