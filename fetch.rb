@@ -53,6 +53,7 @@ for repo in repos do
     puts "Updating #{name}"
     Dir.chdir(name) do
       `git fetch -fp`
+      `git merge`
     end
   else
     puts "Cloning #{name}"
