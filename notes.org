@@ -1,0 +1,33 @@
+* [[https://developer.github.com/v4/][Github Graph API]]
+* Basic Exploration
+** To show the schema
+curl -H "Authorization: bearer `security find-generic-password -a github-graphql-spelunking -w`" https://api.github.com/graphql | jq -C '.' | less -R
+* Query for open prs
+# Type queries into this side of the screen, and you will
+# see intelligent typeaheads aware of the current GraphQL type schema,
+# live syntax, and validation errors highlighted within the text.
+
+# Build a query to get all the pull requests and their most recent activity.
+query {
+  organization(login:"corvino") {
+    repositories(first: 100) {
+      nodes {
+        pullRequests(states:[OPEN], first:100) {
+					nodes {
+            author {
+              login
+            },
+            title,
+            url,
+            publishedAt,
+            number,
+            lastEditedAt,
+            timeline(last: 1) {
+
+            }
+          }
+        }
+      }
+    }
+  }
+}
