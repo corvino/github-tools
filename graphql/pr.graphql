@@ -1,0 +1,20 @@
+query {
+  organization(login:"github") {
+    repositories(first: 100) {
+      nodes {
+        pullRequests(states:[OPEN], first:100) {
+					nodes {
+            author {
+              login
+            },
+            title,
+            url,
+            publishedAt,
+            number,
+            lastEditedAt
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,15 +1,13 @@
-* [[https://developer.github.com/v4/][Github Graph API]]
-* Basic Exploration
-** To show the schema
-curl -H "Authorization: bearer `security find-generic-password -a github-graphql-spelunking -w`" https://api.github.com/graphql | jq -C '.' | less -R
+* Links
+** [[http://graphql.org][GraphQL]]
+** [[https://developer.github.com/v4/][Github Graph API]]
+* Github GraphQL Schema
+** To output to github.graphql.schema
+curl -H "Authorization: bearer `security find-generic-password -a github-graphql-spelunking -w`" https://api.github.com/graphql > github.graphql.schema
 * Query for open prs
-# Type queries into this side of the screen, and you will
-# see intelligent typeaheads aware of the current GraphQL type schema,
-# live syntax, and validation errors highlighted within the text.
-
 # Build a query to get all the pull requests and their most recent activity.
 query {
-  organization(login:"corvino") {
+  organization(login:"github") {
     repositories(first: 100) {
       nodes {
         pullRequests(states:[OPEN], first:100) {
@@ -31,3 +29,11 @@ query {
     }
   }
 }
+* Example of using curl to talk to the GitHub API:
+curl -H "Authorization: bearer `security find-generic-password -a github-graphql-spelunking -w`" -X POST -d " \
+ { \
+   \"query\": \"query { viewer { login }}\" \
+ } \
+" https://api.github.com/graphql
+* jq a file to get formatting and color
+jq -C '.' prs.json | less -R
