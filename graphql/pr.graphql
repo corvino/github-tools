@@ -1,9 +1,16 @@
 query {
-  organization(login:"github") {
+  rateLimit {
+    limit
+    cost
+    remaining
+    resetAt
+  },
+  organization(login:"apple") {
     repositories(first: 100) {
+      totalCount,
       nodes {
-        pullRequests(states:[OPEN], first:100) {
-					nodes {
+        pullRequests(states:[OPEN], first:10) {
+			nodes {
             author {
               login
             },
@@ -12,6 +19,41 @@ query {
             publishedAt,
             number,
             lastEditedAt
+            timeline(last: 1) {
+              nodes {
+                ... on Commit {
+                  author {
+                    date,
+                    email,
+                    name
+                  },
+                  committedDate,
+                  message,
+                  url
+                }
+                ... on CommitCommentThread {
+                  comments(last: 1) {
+                    nodes {
+                      author {
+                        login
+                      },
+                      body,
+                      createdAt,
+                      lastEditedAt
+                    }
+                  }
+                }
+                ... on Comment {
+                  author {
+                    login
+                  },
+                  body,
+                  createdAt,
+                  lastEditedAt,
+                  publishedAt
+                }
+              }
+            }
           }
         }
       }

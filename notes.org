@@ -1,34 +1,10 @@
 * Links
 ** [[http://graphql.org][GraphQL]]
+*** [[http://graphql.org/learn/pagination/][Pagination]]
 ** [[https://developer.github.com/v4/][Github Graph API]]
 * Github GraphQL Schema
 ** To output to github.graphql.schema
 curl -H "Authorization: bearer `security find-generic-password -a github-graphql-spelunking -w`" https://api.github.com/graphql > github.graphql.schema
-* Query for open prs
-# Build a query to get all the pull requests and their most recent activity.
-query {
-  organization(login:"github") {
-    repositories(first: 100) {
-      nodes {
-        pullRequests(states:[OPEN], first:100) {
-					nodes {
-            author {
-              login
-            },
-            title,
-            url,
-            publishedAt,
-            number,
-            lastEditedAt,
-            timeline(last: 1) {
-
-            }
-          }
-        }
-      }
-    }
-  }
-}
 * Example of using curl to talk to the GitHub API:
 curl -H "Authorization: bearer `security find-generic-password -a github-graphql-spelunking -w`" -X POST -d " \
  { \
@@ -37,3 +13,18 @@ curl -H "Authorization: bearer `security find-generic-password -a github-graphql
 " https://api.github.com/graphql
 * jq a file to get formatting and color
 jq -C '.' prs.json | less -R
+* Hierarchy to get to organization PR activity query going
+[[https://developer.github.com/v4/reference/object/ratelimit/][RateLimit]]
+[[https://developer.github.com/v4/reference/object/organization/][Organization]]
+  repositories - [[https://developer.github.com/v4/reference/object/repositoryconnection/][RepositoryConnection]]!
+    nodes - [[[https://developer.github.com/v4/reference/object/repository/][Repository]]]
+      pullRequests - [[https://developer.github.com/v4/reference/object/pullrequestconnection/][PullRequestConnection]]!
+        nodes - [[[https://developer.github.com/v4/reference/object/pullrequest/][PullRequest]]]
+          timeline - [[https://developer.github.com/v4/reference/object/pullrequesttimelineconnection/][PullRequestTimelineConnection]]!
+            nodes - [[[https://developer.github.com/v4/reference/union/pullrequesttimelineitem][PullRequestTimelineItem]]]
+              ... [[https://developer.github.com/v4/reference/object/commit/][Commit]]
+              ... [[https://developer.github.com/v4/reference/object/commitcommentthread/][CommitCommentThread]]
+                comments - [[https://developer.github.com/v4/reference/object/commitcommentconnection/][CommitCommentConnection]]!
+                  nodes - [[https://developer.github.com/v4/reference/object/commitcomment/][CommitComment]]
+              ... [[https://developer.github.com/v4/reference/object/pullrequestreviewcomment/][PullRequestReviewComment]]
+              ... ...
